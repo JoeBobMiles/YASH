@@ -1,5 +1,4 @@
 # YASH
----
 
 > Yet Another SVG Helper
 
