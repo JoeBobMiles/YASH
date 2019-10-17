@@ -1,0 +1,16 @@
+{
+  "name": "YASH",
+  "version": "1.0.0",
+  "description": "Yet Another SVG Helper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [ "SVG", "svg", "helper", "typescript" ],
+  "author": {
+      "name": "Joseph R Miles",
+      "email": "me@josephrmiles.com",
+      "url": "https://josephrmiles.com"
+  },
+  "license": "MIT"
+}
