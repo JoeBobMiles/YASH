@@ -1,16 +1,25 @@
 {
   "name": "YASH",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Yet Another SVG Helper",
-  "main": "index.js",
+  "main": "yash.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [ "SVG", "svg", "helper", "typescript" ],
+  "keywords": [
+    "SVG",
+    "svg",
+    "helper",
+    "typescript"
+  ],
   "author": {
-      "name": "Joseph R Miles",
-      "email": "me@josephrmiles.com",
-      "url": "https://josephrmiles.com"
+    "name": "Joseph R Miles",
+    "email": "me@josephrmiles.com",
+    "url": "https://josephrmiles.com"
   },
-  "license": "MIT"
+  "repository": "https://github.com/JoeBobMiles/YASH",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^3.6.4"
+  }
 }

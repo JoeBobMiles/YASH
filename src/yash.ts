@@ -8,27 +8,27 @@ namespace YASH {
     export const ABSOLUTE: boolean = false;
     export const RELATIVE: boolean = true;
 
-    export class Canvas {
+    export class SVG {
         private selector: string = "";
-        private elements: Path[] = [];
+        private elements: SVGElement[] = [];
 
         constructor (
             selector: string = "",
-            paths: Path[] = []
+            paths: SVGElement[] = []
         ): Canvas {
             this.selector = selector;
-            this.paths = paths;
+            this.elements = paths;
         }
 
         add (element: SVGElement): Canvas {
-            this.paths.push(element);
+            this.elements.push(element);
             return this;
         }
 
         render (): void {
-            const canvas = document.querySelectorAll(this.selector)[0];
+            const svg = document.querySelectorAll(this.selector)[0];
 
-            this.paths.forEach((path: SVGElement) => canvas.appendChild(path.toXML()));
+            this.elements.forEach((elem: SVGElement) => svg.appendChild(elem.toXML()));
         }
     }
 
@@ -71,7 +71,7 @@ namespace YASH {
             // https://stackoverflow.com/questions/17520337/dynamically-rendered-svg-is-not-displaying
             // https://stackoverflow.com/questions/8173217/createelement-vs-createelementns
             let element: Element = document.createElementNS("http://www.w3.org/2000/svg",
-                                                                                                            "path");
+                                                            "path");
 
             element.setAttribute("d", this.pathString);
             element.setAttribute("fill", this.fillColor);
