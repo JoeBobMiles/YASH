@@ -1,4 +1,4 @@
-/// @file yash.js
+/// @file yash.ts
 /// @author Joseph R Miles <me@josephrmiles.com>
 /// @date 2019-10-16
 ///
