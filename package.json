@@ -5,7 +5,8 @@
   "main": "src/yash.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "tsc src/yash.ts --outFile dist/yash.js"
+    "build": "tsc",
+    "dist": "webpack"
   },
   "keywords": [
     "SVG",
