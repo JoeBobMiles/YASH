@@ -33,10 +33,7 @@ namespace YASH {
          *
          * @return {SVG}               A new SVG instance.
          */
-        constructor (
-            selector: string = "",
-            elements: SVGElement[] = []
-        ): SVG {
+        constructor (selector: string = "", elements: SVGElement[] = []) {
             this.selector = selector;
             this.elements = elements;
         }
@@ -111,20 +108,6 @@ namespace YASH {
 
 
         /**
-         * Creates a Path instance that has an empty [pathString] (it won't
-         * draw anything when converted to XML), and a coordinate mode specified
-         * by the user, defaulting to "ABSOLUTE".
-         *
-         * @param  {boolean = ABSOLUTE}    relative The coordinate mode of the Path.
-         *
-         * @return {Path}         A newly created Path instance.
-         */
-        constructor (relative: boolean = ABSOLUTE): Path {
-            this.pathString = "";
-            this.relative = relative;
-        }
-
-        /**
          * Creates a Path instance that has the specified [pathString] and
          * coordinate mode. If both are not specified, the Path will have an
          * empty [pathString] and will use the ABSOLUTE coordinate mode.
@@ -134,10 +117,7 @@ namespace YASH {
          *
          * @return {Path}         A newly created path instance.
          */
-        constructor (
-            pathString: string = "",
-            relative: boolean = ABSOLUTE
-        ): Path {
+        constructor (pathString: string = "", relative: boolean = ABSOLUTE) {
             this.pathString = pathString;
             this.relative = relative;
         }
@@ -166,7 +146,7 @@ namespace YASH {
             element.setAttribute("d", this.pathString);
             element.setAttribute("fill", this.fillColor);
             element.setAttribute("stroke", this.strokeColor);
-            element.setAttribute("stroke-width", this.strokeWidth);
+            element.setAttribute("stroke-width", this.strokeWidth.toString());
 
             return element;
         }
@@ -487,14 +467,23 @@ namespace YASH {
 
         /**
          * Set's the [strokeWidth] to the value given.
+         *
          * @param  {number} strokeWidth The stroke width value.
+         *
          * @return {Path}               The modified Path.
          */
-        strokeWidth (strokeWidth: number): Path {
+        public setStrokeWidth (strokeWidth: number): Path {
             this.strokeWidth = strokeWidth;
 
             return this;
         }
+    }
+
+    class Font {
+        public family: string[] = [];
+        public color: string = "";
+        public size: string = "";
+        public weight: string = "normal";
     }
 
     /// This class represents a Text element in the SVG document.
@@ -516,16 +505,10 @@ namespace YASH {
          *
          * @type {string}
          */
-        private text_anchor: string = "";
+        private textAnchor: string = "";
 
-        /** @type {object} The font properites of the text object. */
-        private font: object = {
-            'family': null,
-            'color': "",
-            'size': null,
-            'weight': "normal",
-            'spacing': 0
-        };
+        /** @type {Font} The font properites of the text object. */
+        private font: Font = new Font();
 
         /**
          * Creates a Text instance that has the given [body], [x], [y], and
@@ -543,7 +526,7 @@ namespace YASH {
             x: number,
             y: number,
             fonts: string[] = null
-        ): Text {
+        ) {
             this.body = body;
             this.x = x;
             this.y = y;
@@ -557,13 +540,13 @@ namespace YASH {
          *
          * @return {Element} A newly created Element.
          */
-        toXML (): Element {
-            let element: Element = document.createElementNS("http://www.w3.org/2000/svg",
-                                                            "text");
+        public toXML (): Element {
+            const element: Element = document.createElementNS("http://www.w3.org/2000/svg",
+                                                              "text");
 
             element.innerHTML = this.body;
-            element.setAttribute("x", this.x);
-            element.setAttribute("y", this.y);
+            element.setAttribute("x", this.x.toString());
+            element.setAttribute("y", this.y.toString());
 
             if (this.font.family)
                 element.setAttribute("font-family", this.font.family.join(","));
@@ -571,8 +554,7 @@ namespace YASH {
             element.setAttribute("font-size", this.font.size);
             element.setAttribute("fill", this.font.color);
             element.setAttribute("font-weight", this.font.weight);
-            element.setAttribute("text-anchor", this.text_anchor);
-            element.setAttribute("letter-spacing", this.font.spacing)
+            element.setAttribute("text-anchor", this.textAnchor);
 
             return element;
         }
@@ -584,7 +566,7 @@ namespace YASH {
          *
          * @return {Text}        The modified Text object.
          */
-        body (body: string): Text {
+        public setBody (body: string): Text {
             this.body = body;
 
             return this;
@@ -608,27 +590,13 @@ namespace YASH {
 
         /**
          * Set's the font families of the Text object to that of the families
-         * given as [args].
-         *
-         * @param  {string[]} ...args A list of font family names.
-         *
-         * @return {Text}             The modified Text object.
-         */
-        fonts (...args: string[]): Text {
-            this.font.family = args;
-
-            return this;
-        }
-
-        /**
-         * Set's the font families of the Text object to that of the families
          * given in [fonts].
          *
          * @param  {string[]} fonts A list of font family names.
          *
          * @return {Text}           The modified Text object.
          */
-        fonts (fonts: string[]): Text {
+        public fonts (fonts: string[]): Text {
             this.font.family = fonts;
 
             return this;
@@ -654,8 +622,11 @@ namespace YASH {
          *
          * @return {Text}         The modified Text object.
          */
-        size (size: (string | number)): Text {
-            this.font.size = size;
+        public size (size: (string | number)): Text {
+            if (typeof size === "number")
+                this.font.size = size.toString();
+            else
+                this.font.size = size;
 
             return this;
         }
@@ -667,8 +638,11 @@ namespace YASH {
          *
          * @return {Text}         The modified Text object.
          */
-        weight (weight: (string | number)): Text {
-            this.font.weight = weight;
+        public weight (weight: (string | number)): Text {
+            if (typeof weight === "number")
+                this.font.weight = weight.toString();
+            else
+                this.font.weight = weight;
 
             return this;
         }
@@ -680,8 +654,8 @@ namespace YASH {
          *
          * @return {Text}            The modified Text object.
          */
-        anchor (position: string): Text {
-            this.text_anchor = position;
+        public anchor (position: string): Text {
+            this.textAnchor = position;
 
             return this;
         }

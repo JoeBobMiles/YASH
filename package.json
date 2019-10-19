@@ -2,9 +2,10 @@
   "name": "YASH",
   "version": "0.0.1",
   "description": "Yet Another SVG Helper",
-  "main": "yash.ts",
+  "main": "src/yash.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "tsc src/yash.ts --outFile dist/yash.js"
   },
   "keywords": [
     "SVG",
@@ -21,5 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "ts-loader": "^6.2.0",
+    "webpack": "^4.41.2"
   }
 }
