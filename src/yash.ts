@@ -19,8 +19,8 @@ namespace YASH {
         /** @type {string} The selector used to find the SVG canvas in the DOM */
         private selector: string = "";
 
-        /** @type {SVGElement[]} The elements to put inside the SVG canvas. */
-        private elements: SVGElement[] = [];
+        /** @type {ISVGElement[]} The elements to put inside the SVG canvas. */
+        private elements: ISVGElement[] = [];
 
 
         /**
@@ -29,11 +29,11 @@ namespace YASH {
          * the document, and the [elements] array starts as empty.
          *
          * @param  {string       = ""}          selector A DOM selector
-         * @param  {SVGElement[] = []}          elements An array of SVGElements.
+         * @param  {ISVGElement[] = []}         elements An array of ISVGElements.
          *
          * @return {SVG}               A new SVG instance.
          */
-        constructor (selector: string = "", elements: SVGElement[] = []) {
+        constructor (selector: string = "", elements: ISVGElement[] = []) {
             this.selector = selector;
             this.elements = elements;
         }
@@ -41,11 +41,11 @@ namespace YASH {
         /**
          * Adds the given [element] to the SVG's elements array.
          *
-         * @param  {SVGElement} element An SVGElement.
+         * @param  {ISVGElement} element An SVGElement.
          *
          * @return {SVG}                The modified SVG instance.
          */
-        add (element: SVGElement): SVG {
+        public add (element: ISVGElement): SVG {
             this.elements.push(element);
             return this;
         }
@@ -55,16 +55,16 @@ namespace YASH {
          * element matching the SVG instance's selector. BE WARNED, THIS DOES
          * NOT VALIDATE THAT svg IS A SVG DOM ELEMENT!
          */
-        render (): void {
+        public render (): void {
             const svg = document.querySelectorAll(this.selector)[0];
 
-            this.elements.forEach((elem: SVGElement) => svg.appendChild(elem.toXML()));
+            this.elements.forEach((elem: ISVGElement) => svg.appendChild(elem.toXML()));
         }
     }
 
     /// This is the interface that defines the common functionality required
     /// from all SVG elements.
-    interface SVGElement {
+    interface ISVGElement {
 
         /**
          * Generates an XML Element based on the information stored in the
@@ -77,7 +77,7 @@ namespace YASH {
     }
 
     /// This class represents a Path element in the SVG document.
-    export class Path implements SVGElement {
+    export class Path implements ISVGElement {
 
         /**
          * The string that contains the insructions for drawing the Path.
@@ -128,7 +128,7 @@ namespace YASH {
          *
          * @return {Element} A newly created Element.
          */
-        toXML (): Element {
+        public toXML (): Element {
             // note(jrm): We use createElementNS() here with the "http://www.w3.org/2000/svg"
             // namespace due to SVG being an XML format separate from HTML. This
             // caused a great deal of confusion for me initially when I used
@@ -140,8 +140,8 @@ namespace YASH {
             // had resort to the good-old Internet to figure this one out:
             // https://stackoverflow.com/questions/17520337/dynamically-rendered-svg-is-not-displaying
             // https://stackoverflow.com/questions/8173217/createelement-vs-createelementns
-            let element: Element = document.createElementNS("http://www.w3.org/2000/svg",
-                                                            "path");
+            const element: Element = document.createElementNS("http://www.w3.org/2000/svg",
+                                                              "path");
 
             element.setAttribute("d", this.pathString);
             element.setAttribute("fill", this.fillColor);
@@ -149,25 +149,6 @@ namespace YASH {
             element.setAttribute("stroke-width", this.strokeWidth.toString());
 
             return element;
-        }
-
-        /**
-         * Adds the given [cmd], with it's argument string ([args]), to the list
-         * of commands that compose the Path. The relative flag controls the
-         * casing of the command letter.
-         *
-         * @param {string}  cmd      The command letter to add.
-         * @param {string}  args     The arguments to add.
-         * @param {boolean} relative Whether or not the command is relative.
-         */
-        private addCommand (cmd: string, args: string, relative: boolean): void {
-            if (!relative)
-                cmd = cmd.toUpperCase();
-
-            if (args != null)
-                this.pathString += `${cmd} ${args} `;
-            else
-                this.pathString += cmd;
         }
 
         /**
@@ -179,7 +160,7 @@ namespace YASH {
          *
          * @return {Path}         The modified Path.
          */
-        moveTo (
+        public moveTo (
             x: number, y: number,
             relative: boolean = this.relative
         ): Path {
@@ -196,7 +177,7 @@ namespace YASH {
          *
          * @return {Path}      The modified Path.
          */
-        m (dx: number, dy: number): Path {
+        public m (dx: number, dy: number): Path {
             return this.moveTo(dx, dy, RELATIVE);
         }
 
@@ -208,7 +189,7 @@ namespace YASH {
          *
          * @return {Path}     The modified Path.
          */
-        M (x: number, y: number): Path {
+        public M (x: number, y: number): Path {
             return this.moveTo(x, y, ABSOLUTE);
         }
 
@@ -223,7 +204,7 @@ namespace YASH {
          *
          * @return {Path}         The modified Path.
          */
-        lineTo (
+        public lineTo (
             x: number, y: number,
             relative: boolean = this.relative
         ): Path {
@@ -240,7 +221,7 @@ namespace YASH {
          *
          * @return {Path}      The modified Path.
          */
-        l (dx: number, dy: number): Path {
+        public l (dx: number, dy: number): Path {
             return this.lineTo(dx, dy, RELATIVE);
         }
 
@@ -252,7 +233,7 @@ namespace YASH {
          *
          * @return {Path}     The modified Path.
          */
-        L (x: number, y: number): Path {
+        public L (x: number, y: number): Path {
             return this.lineTo(x, y, ABSOLUTE);
         }
 
@@ -271,7 +252,7 @@ namespace YASH {
          *
          * @return {Path}            The modified Path.
          */
-        curveTo (
+        public curveTo (
             x1: number, y1: number,
             x2: number, y2: number,
             endX: number, endY: number,
@@ -295,7 +276,7 @@ namespace YASH {
          *
          * @return {Path}         The modified Path.
          */
-        c (
+        public c (
             dx1: number, dy1: number,
             dx2: number, dy2: number,
             endDX: number, endDY: number
@@ -316,7 +297,7 @@ namespace YASH {
          *
          * @return {Path}        The modified Path.
          */
-        C (
+        public C (
             x1: number, y1: number,
             x2: number, y2: number,
             endX: number, endY: number
@@ -336,7 +317,7 @@ namespace YASH {
          *
          * @return {Path}            The modified Path.
          */
-        quadCurveTo (
+        public quadCurveTo (
             x1: number, y1: number,
             endX: number, endY: number,
             relative: boolean = this.relative
@@ -357,7 +338,7 @@ namespace YASH {
          *
          * @return {Path}         The modified Path.
          */
-        q (
+        public q (
             dx1: number, dy2: number,
             endDX: number, endDY: number
         ): Path {
@@ -374,7 +355,7 @@ namespace YASH {
          *
          * @return {Path}        The modified Path.
          */
-        Q (
+        public Q (
             x1: number, y1: number,
             endX: number, endY: number
         ): Path {
@@ -392,7 +373,7 @@ namespace YASH {
          *
          * @return {Path}         The modified Path.
          */
-        cubicCurveTo (
+        public cubicCurveTo (
             x: number, y: number,
             relative: boolean = this.relative
         ): Path {
@@ -409,7 +390,7 @@ namespace YASH {
          *
          * @return {Path}      The modifed Path.
          */
-        t (dx: number, dy: number): Path {
+        public t (dx: number, dy: number): Path {
             return this.cubicCurveTo(dx, dy, RELATIVE);
         }
 
@@ -421,7 +402,7 @@ namespace YASH {
          *
          * @return {Path}     The modified Path.
          */
-        T (x: number, y: number): Path {
+        public T (x: number, y: number): Path {
             return this.cubicCurveTo(x, y, ABSOLUTE);
         }
 
@@ -430,7 +411,7 @@ namespace YASH {
          *
          * @return {Path} The modified Path.
          */
-        close (): Path {
+        public close (): Path {
             this.addCommand("Z", null, false);
 
             return this;
@@ -441,9 +422,16 @@ namespace YASH {
          *
          * @return {Path} The modified Path.
          */
-        Z (): Path { return this.close(); }
+        public Z (): Path { return this.close(); }
 
-        fill (fillColor: string): Path {
+        /**
+         * Sets the [fillColor] for the Path.
+         *
+         * @param  {string} fillColor The color string for the fill of the SVG.
+         *
+         * @return {Path}             The modified Path.
+         */
+        public setFill (fillColor: string): Path {
             this.fillColor = fillColor;
 
             return this;
@@ -458,7 +446,10 @@ namespace YASH {
          *
          * @return {Path}                  This modified Path.
          */
-        stroke (strokeColor: string, strokeWidth: number = this.strokeWidth): Path {
+        public setStroke (
+            strokeColor: string,
+            strokeWidth: number = this.strokeWidth
+        ): Path {
             this.strokeColor = strokeColor;
             this.strokeWidth = strokeWidth;
 
@@ -477,9 +468,28 @@ namespace YASH {
 
             return this;
         }
+
+        /**
+         * Adds the given [cmd], with it's argument string ([args]), to the list
+         * of commands that compose the Path. The relative flag controls the
+         * casing of the command letter.
+         *
+         * @param {string}  cmd      The command letter to add.
+         * @param {string}  args     The arguments to add.
+         * @param {boolean} relative Whether or not the command is relative.
+         */
+        private addCommand (cmd: string, args: string, relative: boolean): void {
+            if (!relative)
+                cmd = cmd.toUpperCase();
+
+            if (args != null)
+                this.pathString += `${cmd} ${args} `;
+            else
+                this.pathString += cmd;
+        }
     }
 
-    class Font {
+    class TextFontProperties {
         public family: string[] = [];
         public color: string = "";
         public size: string = "";
@@ -487,7 +497,7 @@ namespace YASH {
     }
 
     /// This class represents a Text element in the SVG document.
-    export class Text implements SVGElement {
+    export class Text implements ISVGElement {
 
         /** @type {string} The body of the text element. */
         private body: string = "";
@@ -507,8 +517,8 @@ namespace YASH {
          */
         private textAnchor: string = "";
 
-        /** @type {Font} The font properites of the text object. */
-        private font: Font = new Font();
+        /** @type {TextFontProperties} The font properites of the text object. */
+        private fontProperties: TextFontProperties = new TextFontProperties();
 
         /**
          * Creates a Text instance that has the given [body], [x], [y], and
@@ -531,7 +541,7 @@ namespace YASH {
             this.x = x;
             this.y = y;
 
-            this.font.family = fonts;
+            this.fontProperties.family = fonts;
         }
 
         /**
@@ -548,12 +558,13 @@ namespace YASH {
             element.setAttribute("x", this.x.toString());
             element.setAttribute("y", this.y.toString());
 
-            if (this.font.family)
-                element.setAttribute("font-family", this.font.family.join(","));
+            if (this.fontProperties.family)
+                element.setAttribute("font-family",
+                                     this.fontProperties.family.join(","));
 
-            element.setAttribute("font-size", this.font.size);
-            element.setAttribute("fill", this.font.color);
-            element.setAttribute("font-weight", this.font.weight);
+            element.setAttribute("font-size", this.fontProperties.size);
+            element.setAttribute("fill", this.fontProperties.color);
+            element.setAttribute("font-weight", this.fontProperties.weight);
             element.setAttribute("text-anchor", this.textAnchor);
 
             return element;
@@ -581,7 +592,7 @@ namespace YASH {
          *
          * @return {Text}     The modified Text object.
          */
-        position (x: number, y: number): Text {
+        public setPosition (x: number, y: number): Text {
             this.x = x;
             this.y = y;
 
@@ -596,8 +607,8 @@ namespace YASH {
          *
          * @return {Text}           The modified Text object.
          */
-        public fonts (fonts: string[]): Text {
-            this.font.family = fonts;
+        public setFonts (fonts: string[]): Text {
+            this.fontProperties.family = fonts;
 
             return this;
         }
@@ -609,8 +620,8 @@ namespace YASH {
          *
          * @return {Text}         The modified Text object.
          */
-        color (color: string): Text {
-            this.font.color = color;
+        public setColor (color: string): Text {
+            this.fontProperties.color = color;
 
             return this;
         }
@@ -622,11 +633,11 @@ namespace YASH {
          *
          * @return {Text}         The modified Text object.
          */
-        public size (size: (string | number)): Text {
+        public setSize (size: (string | number)): Text {
             if (typeof size === "number")
-                this.font.size = size.toString();
+                this.fontProperties.size = size.toString();
             else
-                this.font.size = size;
+                this.fontProperties.size = size;
 
             return this;
         }
@@ -638,11 +649,11 @@ namespace YASH {
          *
          * @return {Text}         The modified Text object.
          */
-        public weight (weight: (string | number)): Text {
+        public setWeight (weight: (string | number)): Text {
             if (typeof weight === "number")
-                this.font.weight = weight.toString();
+                this.fontProperties.weight = weight.toString();
             else
-                this.font.weight = weight;
+                this.fontProperties.weight = weight;
 
             return this;
         }
@@ -654,7 +665,7 @@ namespace YASH {
          *
          * @return {Text}            The modified Text object.
          */
-        public anchor (position: string): Text {
+        public setAnchor (position: string): Text {
             this.textAnchor = position;
 
             return this;
