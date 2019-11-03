@@ -1,6 +1,6 @@
 {
-  "name": "YASH",
-  "version": "0.0.1",
+  "name": "yet-another-svg-helper",
+  "version": "1.0.0-beta.1",
   "description": "Yet Another SVG Helper",
   "main": "src/yash.ts",
   "scripts": {
